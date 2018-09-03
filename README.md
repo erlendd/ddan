@@ -1,4 +1,4 @@
-# About Deep Domain Adapation Networks (ddan)
+# About Deep Domain Adaptation Networks (ddan)
 Deep domain adaptation networks (DDAN) is a Python library for domain adapation written in TensorFlow.
 
 ## Implemented models
