@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Normalization layers.
+This implements the AdaptiveBatchNormalization layer for Keras.
+The class is a modified version of the BatchNormalization class in Keras github.
 """
 from __future__ import absolute_import
 from __future__ import division
