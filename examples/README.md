@@ -10,14 +10,14 @@ These examples will run in a few minutes on a modern desktop or laptop computer.
 
 ## Results
 
-| | Log loss on validation set
+| Model | Log loss on validation set
 |-|------------|
 |Neural network (no adaption)| 3.46 |
 |DaNN| 0.085 |
 |DDCN| 0.089 |
 |AdaBN| 0.060 |
 |FTTL| 0.086 |
-|----|-------|
+|-----------|
 
 ### References
 [1] https://arxiv.org/abs/1505.07818
