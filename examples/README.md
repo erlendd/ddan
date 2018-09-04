@@ -17,7 +17,6 @@ These examples will run in a few minutes on a modern desktop or laptop computer.
 |DDCN| 0.089 |
 |AdaBN| 0.060 |
 |FTTL| 0.086 |
-|-----------|
 
 ### References
 [1] https://arxiv.org/abs/1505.07818
