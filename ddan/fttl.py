@@ -73,7 +73,8 @@ class FineTuningNet:
                         print 'Activation({})'.format(activations)
                         self.layers += [Activation(activations)(self.layers[-1])]
 
-        y_logits = Dense(1, activation='linear')(self.layers[-1])
+        with tf.variable_scope('tuning_layers'):
+            y_logits = Dense(1, activation='linear')(self.layers[-1])
         self.y_clf = Activation('sigmoid')(y_logits)
 
         self.xe_loss = tf.reduce_mean(
@@ -92,7 +93,9 @@ class FineTuningNet:
 
         # use variable_scope to freeze the feature_extractor layeres..
         finetune_train_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES,
-            "tuning_layers")  
+            "tuning_layers") 
+        print "Will train {} variables-groups".format(len(tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES)))
+        print "Will fine-tune {} variables-groups".format(len(finetune_train_vars))
         if len(finetune_train_vars) == 0:
             print 'WARNING: no fine-tuning layers selected!'
         else:
