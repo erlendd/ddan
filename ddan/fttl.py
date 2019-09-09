@@ -14,13 +14,14 @@ class FineTuningNet:
 
     def __init__(self, nfeatures=50, arch=[8, 'act', 8, 'act'], fine_tune_layers=[2, 3], batch_size=16, 
         val_data=None, validate_every=1, activations='relu', epochs=5000, epochs_finetune=5000, optimizer=None, optimizer_finetune=None,
-        noise=0.0, droprate=0.0, verbose=True):
+        noise=0.0, droprate=0.0, verbose=True, stop_at_target_loss=0):
 
         self.batch_size = batch_size
         self.validate_every = validate_every
         self.epochs = epochs
         self.epochs_finetune = epochs_finetune
         self.verbose = verbose
+        self.stop_at_target_loss = stop_at_target_loss
         if val_data is None:
             self.validate_every = 0
         else:
@@ -134,10 +135,14 @@ class FineTuningNet:
                 self.inp: Xsource, self.labels: ysource.reshape(-1, 1), K.learning_phase(): 1
                 })
 
-            if self.validate_every > 0 and i % self.validate_every == 0:
+            if self.validate_every > 0 and i % self.validate_every == 0 and Xval is not None and Xt is not None:
                 self._validate(i, Xs, ys, Xt, yt, Xval, yval)
 
-    def fit(self, Xs, ys,  Xt, yt, Xval=None, yval=None,
+            if self.stop_at_target_loss > 0 and self.history['target_loss'] < self.stop_at_target_loss:
+                print 'Stopping: target loss below stop value.'
+                break
+
+    def fit(self, Xs, ys,  Xt=None, yt=None, Xval=None, yval=None,
             epochs=None, epochs_finetune=None, batch_size=None, verbose=None):
 
         if epochs is None: epochs = self.epochs
@@ -155,8 +160,12 @@ class FineTuningNet:
         print 'Epoch  sloss tloss vloss'
 
         self._fit(S_batches, self.train_step, epochs, batch_size, Xs, ys, Xt, yt, Xval, yval)
-        print 'Fine tuning on the target data...'
-        self._fit(T_batches, self.train_step_finetune, epochs_finetune, batch_size, Xs, ys, Xt, yt, Xval, yval)
+
+        if Xt is None:
+            print 'No data for fine-tuning: stopping here.'
+        else:
+            print 'Fine tuning on the target data...'
+            self._fit(T_batches, self.train_step_finetune, epochs_finetune, batch_size, Xs, ys, Xt, yt, Xval, yval)
 
 
 
